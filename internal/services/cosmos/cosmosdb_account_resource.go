@@ -338,7 +338,6 @@ func resourceCosmosDbAccount() *pluginsdk.Resource {
 									out = append(out, "EnableAnalyticalStorage")
 								}
 								return validation.StringInSlice(out, !features.ThreePointOhBeta())
-
 							}(),
 						},
 					},
