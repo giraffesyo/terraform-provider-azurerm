@@ -94,27 +94,27 @@ func resourceServicebusQueueSchema() map[string]*pluginsdk.Schema {
 			ValidateFunc: validate.ISO8601Duration,
 		},
 
-			// TODO 4.0: change this from enable_* to *_enabled
-			"enable_batched_operations": {
-				Type:     pluginsdk.TypeBool,
-				Optional: true,
-				Default:  true,
-			},
+		// TODO 4.0: change this from enable_* to *_enabled
+		"enable_batched_operations": {
+			Type:     pluginsdk.TypeBool,
+			Optional: true,
+			Default:  true,
+		},
 
-			// TODO 4.0: change this from enable_* to *_enabled
-			"enable_express": {
-				Type:     pluginsdk.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
+		// TODO 4.0: change this from enable_* to *_enabled
+		"enable_express": {
+			Type:     pluginsdk.TypeBool,
+			Optional: true,
+			Default:  false,
+		},
 
-			// TODO 4.0: change this from enable_* to *_enabled
-			"enable_partitioning": {
-				Type:     pluginsdk.TypeBool,
-				Optional: true,
-				Default:  false,
-				ForceNew: true,
-			},
+		// TODO 4.0: change this from enable_* to *_enabled
+		"enable_partitioning": {
+			Type:     pluginsdk.TypeBool,
+			Optional: true,
+			Default:  false,
+			ForceNew: true,
+		},
 
 		"forward_dead_lettered_messages_to": {
 			Type:         pluginsdk.TypeString,

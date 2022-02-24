@@ -67,16 +67,16 @@ func resourceServiceBusTopicSchema() map[string]*pluginsdk.Schema {
 			}(),
 		},
 
-			"status": {
-				Type:     pluginsdk.TypeString,
-				Optional: true,
-				Default:  string(servicebus.EntityStatusActive),
-				ValidateFunc: validation.StringInSlice([]string{
-					string(servicebus.EntityStatusActive),
-					string(servicebus.EntityStatusDisabled),
-				}, !features.ThreePointOh()),
-				DiffSuppressFunc: suppress.CaseDifferenceV2Only,
-			},
+		"status": {
+			Type:     pluginsdk.TypeString,
+			Optional: true,
+			Default:  string(servicebus.EntityStatusActive),
+			ValidateFunc: validation.StringInSlice([]string{
+				string(servicebus.EntityStatusActive),
+				string(servicebus.EntityStatusDisabled),
+			}, !features.ThreePointOh()),
+			DiffSuppressFunc: suppress.CaseDifferenceV2Only,
+		},
 
 		"auto_delete_on_idle": {
 			Type:         pluginsdk.TypeString,
@@ -99,24 +99,24 @@ func resourceServiceBusTopicSchema() map[string]*pluginsdk.Schema {
 			ValidateFunc: validate.ISO8601Duration,
 		},
 
-			// TODO 4.0: change this from enable_* to *_enabled
-			"enable_batched_operations": {
-				Type:     pluginsdk.TypeBool,
-				Optional: true,
-			},
+		// TODO 4.0: change this from enable_* to *_enabled
+		"enable_batched_operations": {
+			Type:     pluginsdk.TypeBool,
+			Optional: true,
+		},
 
-			// TODO 4.0: change this from enable_* to *_enabled
-			"enable_express": {
-				Type:     pluginsdk.TypeBool,
-				Optional: true,
-			},
+		// TODO 4.0: change this from enable_* to *_enabled
+		"enable_express": {
+			Type:     pluginsdk.TypeBool,
+			Optional: true,
+		},
 
-			// TODO 4.0: change this from enable_* to *_enabled
-			"enable_partitioning": {
-				Type:     pluginsdk.TypeBool,
-				Optional: true,
-				ForceNew: true,
-			},
+		// TODO 4.0: change this from enable_* to *_enabled
+		"enable_partitioning": {
+			Type:     pluginsdk.TypeBool,
+			Optional: true,
+			ForceNew: true,
+		},
 
 		"max_message_size_in_kilobytes": {
 			Type:         pluginsdk.TypeInt,

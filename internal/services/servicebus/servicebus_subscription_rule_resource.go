@@ -67,15 +67,15 @@ func resourceServicebusSubscriptionRuleSchema() map[string]*pluginsdk.Schema {
 			}(),
 		},
 
-			"filter_type": {
-				Type:     pluginsdk.TypeString,
-				Required: true,
-				ValidateFunc: validation.StringInSlice([]string{
-					string(servicebus.FilterTypeSQLFilter),
-					string(servicebus.FilterTypeCorrelationFilter),
-				}, !features.ThreePointOh()),
-				DiffSuppressFunc: suppress.CaseDifferenceV2Only,
-			},
+		"filter_type": {
+			Type:     pluginsdk.TypeString,
+			Required: true,
+			ValidateFunc: validation.StringInSlice([]string{
+				string(servicebus.FilterTypeSQLFilter),
+				string(servicebus.FilterTypeCorrelationFilter),
+			}, !features.ThreePointOh()),
+			DiffSuppressFunc: suppress.CaseDifferenceV2Only,
+		},
 
 		"action": {
 			Type:     pluginsdk.TypeString,
