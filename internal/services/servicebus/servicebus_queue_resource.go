@@ -51,6 +51,7 @@ func resourceServicebusQueueSchema() map[string]*pluginsdk.Schema {
 			ValidateFunc: azValidate.QueueName(),
 		},
 
+		//lintignore: S013
 		"namespace_id": {
 			Type:         pluginsdk.TypeString,
 			Required:     features.ThreePointOhBeta(),

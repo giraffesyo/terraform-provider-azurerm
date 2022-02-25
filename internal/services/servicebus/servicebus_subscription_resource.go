@@ -50,6 +50,7 @@ func resourceServicebusSubscriptionSchema() map[string]*pluginsdk.Schema {
 			ValidateFunc: validate.SubscriptionName(),
 		},
 
+		//lintignore: S013
 		"topic_id": {
 			Type:         pluginsdk.TypeString,
 			Required:     features.ThreePointOhBeta(),

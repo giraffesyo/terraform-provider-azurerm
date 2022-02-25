@@ -5,12 +5,11 @@ import (
 	"log"
 	"time"
 
-	"github.com/hashicorp/terraform-provider-azurerm/internal/features"
-
 	"github.com/Azure/azure-sdk-for-go/services/preview/servicebus/mgmt/2021-06-01-preview/servicebus"
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/azure"
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/tf"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/clients"
+	"github.com/hashicorp/terraform-provider-azurerm/internal/features"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/servicebus/parse"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/servicebus/validate"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/tf/pluginsdk"
@@ -52,6 +51,7 @@ func resourceServiceBusTopicAuthorizationRuleSchema() map[string]*pluginsdk.Sche
 			ValidateFunc: validate.AuthorizationRuleName(),
 		},
 
+		//lintignore: S013
 		"topic_id": {
 			Type:         pluginsdk.TypeString,
 			Required:     features.ThreePointOhBeta(),
@@ -68,42 +68,39 @@ func resourceServiceBusTopicAuthorizationRuleSchema() map[string]*pluginsdk.Sche
 		},
 	}
 
-	oldSchema := make(map[string]*pluginsdk.Schema)
 	if !features.ThreePointOhBeta() {
-		oldSchema = map[string]*pluginsdk.Schema{
-			"topic_name": {
-				Type:          pluginsdk.TypeString,
-				Optional:      true,
-				Computed:      true,
-				ForceNew:      true,
-				ValidateFunc:  validate.TopicName(),
-				Deprecated:    `Deprecated in favor of "topic_id"`,
-				ConflictsWith: []string{"topic_id"},
-			},
+		out["topic_name"] = &pluginsdk.Schema{
+			Type:          pluginsdk.TypeString,
+			Optional:      true,
+			Computed:      true,
+			ForceNew:      true,
+			ValidateFunc:  validate.TopicName(),
+			Deprecated:    `Deprecated in favor of "topic_id"`,
+			ConflictsWith: []string{"topic_id"},
+		}
 
-			"namespace_name": {
-				Type:          pluginsdk.TypeString,
-				Optional:      true,
-				Computed:      true,
-				ForceNew:      true,
-				ValidateFunc:  validate.NamespaceName,
-				Deprecated:    `Deprecated in favor of "topic_id"`,
-				ConflictsWith: []string{"topic_id"},
-			},
+		out["namespace_name"] = &pluginsdk.Schema{
+			Type:          pluginsdk.TypeString,
+			Optional:      true,
+			Computed:      true,
+			ForceNew:      true,
+			ValidateFunc:  validate.NamespaceName,
+			Deprecated:    `Deprecated in favor of "topic_id"`,
+			ConflictsWith: []string{"topic_id"},
+		}
 
-			"resource_group_name": {
-				Type:          pluginsdk.TypeString,
-				Optional:      true,
-				Computed:      true,
-				ForceNew:      true,
-				ValidateFunc:  azure.ValidateResourceGroupName,
-				Deprecated:    `Deprecated in favor of "topic_id"`,
-				ConflictsWith: []string{"topic_id"},
-			},
+		out["resource_group_name"] = &pluginsdk.Schema{
+			Type:          pluginsdk.TypeString,
+			Optional:      true,
+			Computed:      true,
+			ForceNew:      true,
+			ValidateFunc:  azure.ValidateResourceGroupName,
+			Deprecated:    `Deprecated in favor of "topic_id"`,
+			ConflictsWith: []string{"topic_id"},
 		}
 	}
 
-	return azure.MergeSchema(out, oldSchema)
+	return out
 }
 
 func resourceServiceBusTopicAuthorizationRuleCreateUpdate(d *pluginsdk.ResourceData, meta interface{}) error {

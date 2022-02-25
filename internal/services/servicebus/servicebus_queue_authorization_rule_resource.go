@@ -51,6 +51,7 @@ func resourceServiceBusqueueAuthorizationRuleSchema() map[string]*pluginsdk.Sche
 			ValidateFunc: validate.AuthorizationRuleName(),
 		},
 
+		//lintignore: S013
 		"queue_id": {
 			Type:         pluginsdk.TypeString,
 			Required:     features.ThreePointOhBeta(),

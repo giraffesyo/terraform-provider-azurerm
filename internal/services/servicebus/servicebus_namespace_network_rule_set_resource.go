@@ -50,6 +50,7 @@ func resourceServiceBusNamespaceNetworkRuleSet() *pluginsdk.Resource {
 
 func resourceServicebusNamespaceNetworkRuleSetSchema() map[string]*pluginsdk.Schema {
 	s := map[string]*pluginsdk.Schema{
+		//lintignore: S013
 		"namespace_id": {
 			Type:         pluginsdk.TypeString,
 			Required:     features.ThreePointOhBeta(),
