@@ -180,7 +180,7 @@ func resourceServiceBusSubscriptionCreateUpdate(d *pluginsdk.ResourceData, meta 
 	if topicIdLit := d.Get("topic_id").(string); topicIdLit != "" {
 		topicId, _ := parse.TopicID(topicIdLit)
 		resourceId = parse.NewSubscriptionID(topicId.SubscriptionId, topicId.ResourceGroup, topicId.NamespaceName, topicId.Name, d.Get("name").(string))
-	} else {
+	} else if !features.ThreePointOhBeta() {
 		resourceId = parse.NewSubscriptionID(subscriptionId, d.Get("resource_group_name").(string), d.Get("namespace_name").(string), d.Get("topic_name").(string), d.Get("name").(string))
 	}
 
@@ -255,10 +255,13 @@ func resourceServiceBusSubscriptionRead(d *pluginsdk.ResourceData, meta interfac
 		return fmt.Errorf("retrieving %s: %+v", id, err)
 	}
 
+	if !features.ThreePointOhBeta() {
+		d.Set("topic_name", id.TopicName)
+		d.Set("namespace_name", id.NamespaceName)
+		d.Set("resource_group_name", id.ResourceGroup)
+	}
+
 	d.Set("name", id.Name)
-	d.Set("topic_name", id.TopicName)
-	d.Set("namespace_name", id.NamespaceName)
-	d.Set("resource_group_name", id.ResourceGroup)
 	d.Set("topic_id", parse.NewTopicID(id.SubscriptionId, id.ResourceGroup, id.NamespaceName, id.TopicName).ID())
 
 	if props := resp.SBSubscriptionProperties; props != nil {
