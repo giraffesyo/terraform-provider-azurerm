@@ -60,7 +60,7 @@ func resourceServiceBusqueueAuthorizationRuleSchema() map[string]*pluginsdk.Sche
 			ForceNew:     true,
 			ValidateFunc: validate.QueueID,
 			ConflictsWith: func() []string {
-				if features.ThreePointOhBeta() {
+				if !features.ThreePointOhBeta() {
 					return []string{"queue_name", "namespace_name", "resource_group_name"}
 				}
 				return []string{}
