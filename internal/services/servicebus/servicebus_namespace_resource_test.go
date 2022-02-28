@@ -221,7 +221,7 @@ resource "azurerm_servicebus_namespace" "test" {
   name                = "acctestservicebusnamespace-%d"
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
-  sku                 = "basic"
+  sku                 = "Basic"
 }
 `, data.RandomInteger, data.Locations.Primary, data.RandomInteger)
 }
@@ -241,7 +241,7 @@ resource "azurerm_servicebus_namespace" "test" {
   name                = "acctestservicebusnamespace-%[1]d"
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
-  sku                 = "basic"
+  sku                 = "Basic"
   tags = {
     ENV = "Test"
   }
@@ -382,7 +382,7 @@ resource "azurerm_servicebus_namespace" "test" {
   name                = "acctestservicebusnamespace-%d"
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
-  sku                 = "basic"
+  sku                 = "Basic"
 
   identity {
     type = "SystemAssigned"
@@ -412,7 +412,7 @@ resource "azurerm_servicebus_namespace" "test" {
   name                = "acctestservicebusnamespace-%d"
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
-  sku                 = "basic"
+  sku                 = "Basic"
 
   identity {
     type = "UserAssigned"
@@ -445,7 +445,7 @@ resource "azurerm_servicebus_namespace" "test" {
   name                = "acctestservicebusnamespace-%d"
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
-  sku                 = "basic"
+  sku                 = "Basic"
 
   identity {
     type = "SystemAssigned, UserAssigned"
