@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/azure"
+
 	"github.com/hashicorp/terraform-provider-azurerm/internal/clients"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/servicebus/parse"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/servicebus/validate"
@@ -22,31 +23,39 @@ func dataSourceServiceBusTopicAuthorizationRule() *pluginsdk.Resource {
 		},
 
 		Schema: map[string]*pluginsdk.Schema{
-			"topic_id": {
-				Type:         pluginsdk.TypeString,
-				Required:     true,
-				ValidateFunc: validate.TopicID,
-			},
-
 			"name": {
 				Type:         pluginsdk.TypeString,
 				Required:     true,
 				ValidateFunc: validate.AuthorizationRuleName(),
 			},
 
+			"topic_id": {
+				Type:         pluginsdk.TypeString,
+				Optional:     true,
+				ValidateFunc: validate.TopicID,
+				AtLeastOneOf: []string{"topic_id", "resource_group_name", "namespace_name", "queue_name"},
+			},
+
 			"namespace_name": {
 				Type:         pluginsdk.TypeString,
-				Required:     true,
+				Optional:     true,
 				ValidateFunc: validate.NamespaceName,
+				AtLeastOneOf: []string{"topic_id", "resource_group_name", "namespace_name", "queue_name"},
 			},
 
-			"topic_name": {
+			"queue_name": {
 				Type:         pluginsdk.TypeString,
-				Required:     true,
-				ValidateFunc: validate.TopicName(),
+				Optional:     true,
+				ValidateFunc: validate.QueueName(),
+				AtLeastOneOf: []string{"topic_id", "resource_group_name", "namespace_name", "queue_name"},
 			},
 
-			"resource_group_name": azure.SchemaResourceGroupName(),
+			"resource_group_name": {
+				Type:         pluginsdk.TypeString,
+				Optional:     true,
+				ValidateFunc: azure.ValidateResourceGroupName,
+				AtLeastOneOf: []string{"topic_id", "resource_group_name", "namespace_name", "queue_name"},
+			},
 
 			"listen": {
 				Type:     pluginsdk.TypeBool,
@@ -116,7 +125,7 @@ func dataSourceServiceBusTopicAuthorizationRuleRead(d *pluginsdk.ResourceData, m
 		if err != nil {
 			return fmt.Errorf("parsing topic ID %q: %+v", v, err)
 		}
-		rgName = topicId.Name
+		rgName = topicId.ResourceGroup
 		nsName = topicId.NamespaceName
 		topicName = topicId.Name
 	} else {

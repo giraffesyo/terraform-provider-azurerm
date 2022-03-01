@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/azure"
+
 	"github.com/hashicorp/terraform-provider-azurerm/internal/clients"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/servicebus/parse"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/servicebus/validate"
@@ -22,31 +23,39 @@ func dataSourceServiceBusQueueAuthorizationRule() *pluginsdk.Resource {
 		},
 
 		Schema: map[string]*pluginsdk.Schema{
-			"queue_id": {
-				Type:         pluginsdk.TypeString,
-				Required:     true,
-				ValidateFunc: validate.QueueID,
-			},
-
 			"name": {
 				Type:         pluginsdk.TypeString,
 				Required:     true,
 				ValidateFunc: validate.AuthorizationRuleName(),
 			},
 
+			"queue_id": {
+				Type:         pluginsdk.TypeString,
+				Optional:     true,
+				ValidateFunc: validate.QueueID,
+				AtLeastOneOf: []string{"queue_id", "resource_group_name", "namespace_name", "queue_name"},
+			},
+
 			"namespace_name": {
 				Type:         pluginsdk.TypeString,
-				Required:     true,
+				Optional:     true,
 				ValidateFunc: validate.NamespaceName,
+				AtLeastOneOf: []string{"queue_id", "resource_group_name", "namespace_name", "queue_name"},
 			},
 
 			"queue_name": {
 				Type:         pluginsdk.TypeString,
-				Required:     true,
+				Optional:     true,
 				ValidateFunc: validate.QueueName(),
+				AtLeastOneOf: []string{"queue_id", "resource_group_name", "namespace_name", "queue_name"},
 			},
 
-			"resource_group_name": azure.SchemaResourceGroupName(),
+			"resource_group_name": {
+				Type:         pluginsdk.TypeString,
+				Optional:     true,
+				ValidateFunc: azure.ValidateResourceGroupName,
+				AtLeastOneOf: []string{"queue_id", "resource_group_name", "namespace_name", "queue_name"},
+			},
 
 			"listen": {
 				Type:     pluginsdk.TypeBool,
@@ -116,7 +125,7 @@ func dataSourceServiceBusQueueAuthorizationRuleRead(d *pluginsdk.ResourceData, m
 		if err != nil {
 			return fmt.Errorf("parsing topic ID %q: %+v", v, err)
 		}
-		rgName = queueId.Name
+		rgName = queueId.ResourceGroup
 		nsName = queueId.NamespaceName
 		queueName = queueId.Name
 	} else {
