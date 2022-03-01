@@ -207,7 +207,7 @@ func (r NetworkInterfaceBackendAddressPoolResource) requiresImport(data acceptan
 resource "azurerm_network_interface_backend_address_pool_association" "import" {
   network_interface_id     = azurerm_network_interface_backend_address_pool_association.test.network_interface_id
   ip_configuration_name    = azurerm_network_interface_backend_address_pool_association.test.ip_configuration_name
-  backend_address_pool_ids = [azurerm_network_interface_backend_address_pool_association.test.backend_address_pool_id]
+  backend_address_pool_id  = [azurerm_network_interface_backend_address_pool_association.test.backend_address_pool_id]
 }
 `, r.basic(data))
 }
