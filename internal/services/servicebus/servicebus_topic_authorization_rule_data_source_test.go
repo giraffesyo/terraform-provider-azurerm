@@ -55,10 +55,8 @@ func (ServiceBusTopicAuthorizationRuleDataSource) basic(data acceptance.TestData
 %s
 
 data "azurerm_servicebus_topic_authorization_rule" "test" {
-  name                = azurerm_servicebus_topic_authorization_rule.test.name
-  namespace_name      = azurerm_servicebus_topic_authorization_rule.test.namespace_name
-  resource_group_name = azurerm_servicebus_topic_authorization_rule.test.resource_group_name
-  topic_name          = azurerm_servicebus_topic_authorization_rule.test.topic_name
+  name     = azurerm_servicebus_topic_authorization_rule.test.name
+  topic_id = azurerm_servicebus_topic.test.id
 }
 `, ServiceBusTopicAuthorizationRuleResource{}.base(data, true, true, true))
 }
