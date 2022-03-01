@@ -37,9 +37,8 @@ resource "azurerm_servicebus_namespace" "test" {
   sku                 = "Standard"
 }
 resource "azurerm_servicebus_topic" "test" {
-  name                = "acctestservicebustopic-%d"
-  namespace_name      = "${azurerm_servicebus_namespace.test.name}"
-  resource_group_name = "${azurerm_resource_group.test.name}"
+  name         = "acctestservicebustopic-%d"
+  namespace_id = azurerm_servicebus_namespace.test.id
 }
 resource "azurerm_servicebus_subscription" "test" {
   name                = "acctestservicebussubscription-%d"
