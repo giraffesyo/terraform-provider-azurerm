@@ -22,6 +22,12 @@ func dataSourceServiceBusQueueAuthorizationRule() *pluginsdk.Resource {
 		},
 
 		Schema: map[string]*pluginsdk.Schema{
+			"queue_id": {
+				Type:         pluginsdk.TypeString,
+				Required:     true,
+				ValidateFunc: validate.QueueID,
+			},
+
 			"name": {
 				Type:         pluginsdk.TypeString,
 				Required:     true,
@@ -102,7 +108,24 @@ func dataSourceServiceBusQueueAuthorizationRuleRead(d *pluginsdk.ResourceData, m
 	ctx, cancel := timeouts.ForRead(meta.(*clients.Client).StopContext, d)
 	defer cancel()
 
-	id := parse.NewQueueAuthorizationRuleID(subscriptionId, d.Get("resource_group_name").(string), d.Get("namespace_name").(string), d.Get("queue_name").(string), d.Get("name").(string))
+	var rgName string
+	var nsName string
+	var queueName string
+	if v, ok := d.Get("queue_id").(string); ok && v != "" {
+		queueId, err := parse.QueueID(v)
+		if err != nil {
+			return fmt.Errorf("parsing topic ID %q: %+v", v, err)
+		}
+		rgName = queueId.Name
+		nsName = queueId.NamespaceName
+		queueName = queueId.Name
+	} else {
+		rgName = d.Get("resource_group_name").(string)
+		nsName = d.Get("namespace_name").(string)
+		queueName = d.Get("topic_name").(string)
+	}
+
+	id := parse.NewQueueAuthorizationRuleID(subscriptionId, rgName, nsName, queueName, d.Get("name").(string))
 	resp, err := client.GetAuthorizationRule(ctx, id.ResourceGroup, id.NamespaceName, id.QueueName, id.AuthorizationRuleName)
 	if err != nil {
 		if utils.ResponseWasNotFound(resp.Response) {
