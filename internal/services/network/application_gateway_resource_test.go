@@ -1446,8 +1446,9 @@ resource "azurerm_public_ip" "test_standard" {
   name                = "acctest-pubip-%d-standard"
   location            = azurerm_resource_group.test.location
   resource_group_name = azurerm_resource_group.test.name
-  sku                 = "Standard"
+  sku                 = "Standard" 
   allocation_method   = "Static"
+  zones               = ["1", "2"]
 }
 
 resource "azurerm_application_gateway" "test" {

@@ -6,8 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-provider-azurerm/internal/features"
-
 	"github.com/Azure/azure-sdk-for-go/services/network/mgmt/2021-05-01/network"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/acceptance"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/acceptance/check"
@@ -188,11 +186,7 @@ func (NetworkInterfaceApplicationGatewayBackendAddressPoolAssociationResource) d
 }
 
 func (r NetworkInterfaceApplicationGatewayBackendAddressPoolAssociationResource) basic(data acceptance.TestData) string {
-	backendPoolSnippet := "backend_address_pool_ids = [azurerm_application_gateway.test.backend_address_pool.0.id]"
-	if !features.ThreePointOhBeta() {
-		backendPoolSnippet = "backend_address_pool_id  = azurerm_application_gateway.test.backend_address_pool.0.id"
-	}
-	out := fmt.Sprintf(`
+	return fmt.Sprintf(`
 %s
 
 resource "azurerm_network_interface" "test" {
@@ -210,35 +204,25 @@ resource "azurerm_network_interface" "test" {
 resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "test" {
   network_interface_id     = azurerm_network_interface.test.id
   ip_configuration_name    = "testconfiguration1"
-  %s
+  backend_address_pool_ids = [azurerm_application_gateway.test.backend_address_pool.0.id]
 }
-`, r.template(data), data.RandomInteger, backendPoolSnippet)
-	return out
+`, r.template(data), data.RandomInteger)
 }
 
 func (r NetworkInterfaceApplicationGatewayBackendAddressPoolAssociationResource) requiresImport(data acceptance.TestData) string {
-	backendPoolSnippet := "backend_address_pool_ids = [azurerm_network_interface_application_gateway_backend_address_pool_association.test.backend_address_pool_id]"
-	if !features.ThreePointOhBeta() {
-		backendPoolSnippet = "backend_address_pool_id  = azurerm_network_interface_application_gateway_backend_address_pool_association.test.backend_address_pool_id"
-	}
-	out := fmt.Sprintf(`
+	return fmt.Sprintf(`
 %s
 
 resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "import" {
   network_interface_id     = azurerm_network_interface_application_gateway_backend_address_pool_association.test.network_interface_id
   ip_configuration_name    = azurerm_network_interface_application_gateway_backend_address_pool_association.test.ip_configuration_name
-  %s
+  backend_address_pool_ids = [azurerm_application_gateway.test.backend_address_pool.0.id]
 }
-`, r.basic(data), backendPoolSnippet)
-	return out
+`, r.basic(data))
 }
 
 func (r NetworkInterfaceApplicationGatewayBackendAddressPoolAssociationResource) updateNIC(data acceptance.TestData) string {
-	backendPoolSnippet := "backend_address_pool_ids = [azurerm_application_gateway.test.backend_address_pool.0.id]"
-	if !features.ThreePointOhBeta() {
-		backendPoolSnippet = "backend_address_pool_id  = azurerm_application_gateway.test.backend_address_pool.0.id"
-	}
-	out := fmt.Sprintf(`
+	return fmt.Sprintf(`
 %s
 
 resource "azurerm_network_interface" "test" {
@@ -256,17 +240,16 @@ resource "azurerm_network_interface" "test" {
   ip_configuration {
     name                          = "testconfiguration2"
     private_ip_address_version    = "IPv6"
-    private_ip_address_allocation = "dynamic"
+    private_ip_address_allocation = "Dynamic"
   }
 }
 
 resource "azurerm_network_interface_application_gateway_backend_address_pool_association" "test" {
   network_interface_id     = azurerm_network_interface.test.id
   ip_configuration_name    = "testconfiguration1"
-  %s
+  backend_address_pool_ids = [azurerm_application_gateway.test.backend_address_pool.0.id]
 }
-`, r.template(data), data.RandomInteger, backendPoolSnippet)
-	return out
+`, r.template(data), data.RandomInteger)
 }
 
 func (NetworkInterfaceApplicationGatewayBackendAddressPoolAssociationResource) template(data acceptance.TestData) string {

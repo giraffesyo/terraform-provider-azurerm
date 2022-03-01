@@ -6,6 +6,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/hashicorp/terraform-provider-azurerm/internal/features"
+
 	"github.com/hashicorp/terraform-provider-azurerm/internal/acceptance"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/acceptance/check"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/clients"
@@ -211,6 +213,10 @@ resource "azurerm_express_route_port" "test" {
 
 func (r ExpressRoutePortResource) linkCipher(data acceptance.TestData) string {
 	template := r.template(data)
+	var softDelete string
+	if !features.ThreePointOhBeta() {
+		softDelete = "soft_delete_enabled = true"
+	}
 	return fmt.Sprintf(`
 %s
 
@@ -228,7 +234,7 @@ resource "azurerm_key_vault" "test" {
   resource_group_name      = azurerm_resource_group.test.name
   tenant_id                = data.azurerm_client_config.current.tenant_id
   sku_name                 = "premium"
-  soft_delete_enabled      = true
+  %[3]s
   purge_protection_enabled = false
 
   access_policy {
@@ -284,7 +290,7 @@ resource "azurerm_express_route_port" "test" {
     macsec_cak_keyvault_secret_id = azurerm_key_vault_secret.cak.id
   }
 }
-`, template, data.RandomIntOfLength(8))
+`, template, data.RandomIntOfLength(8), softDelete)
 }
 
 func (r ExpressRoutePortResource) template(data acceptance.TestData) string {
