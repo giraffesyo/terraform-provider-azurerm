@@ -42,16 +42,12 @@ resource "azurerm_servicebus_topic" "test" {
 }
 resource "azurerm_servicebus_subscription" "test" {
   name                = "acctestservicebussubscription-%d"
-  namespace_name      = "${azurerm_servicebus_namespace.test.name}"
-  topic_name          = "${azurerm_servicebus_topic.test.name}"
-  resource_group_name = "${azurerm_resource_group.test.name}"
+  topic_id            = azurerm_servicebus_topic.test.id
   max_delivery_count  = 10
 }
 data "azurerm_servicebus_subscription" "test" {
   name                = azurerm_servicebus_subscription.test.name
-  resource_group_name = azurerm_resource_group.test.name
-  namespace_name      = azurerm_servicebus_namespace.test.name
-  topic_name          = azurerm_servicebus_topic.test.name
+  topic_id            = azurerm_servicebus_topic.test.id
 }
 `, data.RandomInteger, data.Locations.Primary, data.RandomInteger, data.RandomInteger, data.RandomInteger)
 }

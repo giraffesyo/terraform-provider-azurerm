@@ -22,6 +22,12 @@ func dataSourceServiceBusSubscription() *pluginsdk.Resource {
 		},
 
 		Schema: map[string]*pluginsdk.Schema{
+			"topic_id": {
+				Type:         pluginsdk.TypeString,
+				Required:     true,
+				ValidateFunc: validate.TopicID,
+			},
+
 			"name": {
 				Type:     pluginsdk.TypeString,
 				Required: true,
@@ -101,7 +107,24 @@ func dataSourceServiceBusSubscriptionRead(d *pluginsdk.ResourceData, meta interf
 	ctx, cancel := timeouts.ForRead(meta.(*clients.Client).StopContext, d)
 	defer cancel()
 
-	id := parse.NewSubscriptionID(subscriptionId, d.Get("resource_group_name").(string), d.Get("namespace_name").(string), d.Get("topic_name").(string), d.Get("name").(string))
+	var rgName string
+	var nsName string
+	var topicName string
+	if v, ok := d.Get("topic_id").(string); ok && v != "" {
+		topicId, err := parse.TopicID(v)
+		if err != nil {
+			return fmt.Errorf("parsing topic ID %q: %+v", v, err)
+		}
+		rgName = topicId.Name
+		nsName = topicId.NamespaceName
+		topicName = topicId.Name
+	} else {
+		rgName = d.Get("resource_group_name").(string)
+		nsName = d.Get("namespace_name").(string)
+		topicName = d.Get("topic_name").(string)
+	}
+
+	id := parse.NewSubscriptionID(subscriptionId, rgName, nsName, topicName, d.Get("name").(string))
 	existing, err := client.Get(ctx, id.ResourceGroup, id.NamespaceName, id.TopicName, id.Name)
 	if err != nil {
 		if utils.ResponseWasNotFound(existing.Response) {
